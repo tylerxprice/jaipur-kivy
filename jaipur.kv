@@ -1,0 +1,262 @@
+#:kivy 1.9.1
+#: import Vector kivy.vector.Vector
+
+<Label>
+    font_name: 'Constantia'
+    font_size: 30
+    #color: (1, 1, 1, 1)
+    color: (23.0/255, 117.0/255, 99.0/255, 1)
+    height: self.font_size
+
+#    canvas.after:
+#        Color:
+#            rgb: 1, 0, 0
+#        Line:
+#            rectangle: (self.x, self.y, self.width, self.height)
+#            width: 1.0
+
+#<Image>
+#    canvas.after:
+#        Color:
+#            rgb: 0, 1, 0
+#        Line:
+#            rectangle: (self.x, self.y, self.width, self.height)
+#            width: 1.0
+
+
+<BoardArea>:
+    canvas:
+        Color:
+            rgb: 23.0/255, 117.0/255, 99.0/255
+        Line:
+            rounded_rectangle: (self.x, self.y, self.size[0], self.size[1], 10)
+            width: 1.0
+            dash_length: 10
+            dash_offset: 10
+    Label:
+        color: (23.0/255, 117.0/255, 99.0/255, 1)
+        center_x: self.parent.center_x
+        top: self.parent.top
+        text: self.parent.__class__.__name__
+        width: self.parent.width
+
+
+<BackgroundScreenManager>
+    canvas.before:
+        BorderImage:
+            # BorderImage behaves like the CSS BorderImage
+            texture: self.background_image.texture
+            pos: self.pos
+            size: self.size
+
+
+
+<GameTable>:
+    background: background_id
+    draw_deck: draw_deck_id
+    discard_pile: discard_pile_id
+    market: market_id
+    token_bank: token_bank_id
+    player_area: player_area_id
+    player_one: player_one_id
+    player_two: player_two_id
+
+    canvas.before:
+        Color:
+            rgb: 1, 1, 1
+        Rectangle:
+            pos: self.pos
+            size: self.size
+            #texture: app.texture
+
+    DrawDeck:
+        id: draw_deck_id
+        right: self.parent.right - 40
+        top: self.parent.top - 40
+
+    DiscardPile:
+        id: discard_pile_id
+        right: self.parent.right - 40
+        top: self.parent.top - 40 - 227 - 5
+
+    Market:
+        id: market_id
+        right: self.parent.right - 40 - 162 - 5
+        top: self.parent.top - 40
+
+    TokenBank:
+        id: token_bank_id
+        right: self.parent.right - 40 - 162 - 5 - 162*5 - 5
+        top: self.parent.top - 40
+
+    PlayerArea:
+        id: player_area_id
+        right: self.parent.discard_pile.x - 5
+        y: self.parent.token_bank.y
+
+
+    PlayerOne:
+        id: player_one_id
+
+    PlayerTwo:
+        id: player_two_id
+        right: self.parent.right
+
+    Button:
+        id: sell_cards_button_id
+        color: (1, 1, 1, 1)
+        background_normal: 'images/pink_button_normal.png'
+        background_down: 'images/pink_button_down.png'
+        background_disabled_normal: 'images/pink_button_disabled.png'
+        background_disabled_down: 'images/pink_button_disabled.png'
+        border: (7, 7, 7, 7)
+        font_size: 25
+        bold: True
+        text: "SELL CARDS"
+        size: self.texture_size
+        padding: (18, 8)
+        x: self.parent.center_x - self.width - 5
+        y: 110
+        valign: 'middle'
+
+    Button:
+        id: trade_cards_button_id
+        color: (1, 1, 1, 1)
+        background_normal: 'images/orange_button_normal.png'
+        background_down: 'images/orange_button_down.png'
+        background_disabled_normal: 'images/orange_button_disabled.png'
+        background_disabled_down: 'images/orange_button_disabled.png'
+        border: (7, 7, 7, 7)
+        font_size: 25
+        bold: True
+        text: "TRADE CARDS"
+        size: self.texture_size
+        padding: (10, 8)
+        x: self.parent.center_x + 5
+        y: 110
+        valign: 'middle'
+
+    Image:
+        id: background_id
+        source: 'images/small_border.png'
+        pos: self.pos
+        size: self.texture_size
+
+
+<PlayerOne>:
+    avatar: avatar_id
+    player_number: 1
+    Image:
+        id: avatar_id
+        source: self.parent.shaded_avatar_source
+        size: self.texture.size
+        pos: (30, 25)
+
+<PlayerTwo>:
+    avatar: avatar_id
+    player_number: 2
+    Image:
+        id: avatar_id
+        source: self.parent.shaded_avatar_source
+        size: self.texture.size
+        right: self.parent.right - 30
+        y: 25
+
+<Player>:
+    money_icon: money_icon_id
+    money_label: money_label_id
+    hand_icon: hand_icon_id
+    hand_label: hand_label_id
+    herd_icon: herd_icon_id
+    herd_label: herd_label_id
+    excellence_token_one: excellence_token_one_id
+    excellence_token_two: excellence_token_two_id
+
+    #source: 'images/player_one_dashboard.png'
+    #size: self.texture_size
+
+    Image:
+        id: money_icon_id
+        source: 'images/player_money_icon.png'
+        size: self.texture_size
+        pos:
+            (
+            self.parent.avatar.pos[0] + 140 if self.parent.player_number == 1 else self.parent.right - 310 - self.width,
+            self.parent.avatar.pos[1] + 5
+            )
+    Label:
+        id: money_label_id
+        size: self.texture_size
+        halign: 'left'
+        text: '00'
+        pos: (self.parent.money_icon.center_x + self.parent.money_icon.width / 2, self.parent.money_icon.pos[1] + 5 )
+
+    Image:
+        id: hand_icon_id
+        source: 'images/player_hand_icon.png'
+        size: self.texture_size
+        pos: (self.parent.money_label.center_x + self.parent.money_label.width / 2, self.parent.money_label.pos[1] - 5)
+    Label:
+        id: hand_label_id
+        size: self.texture_size
+        halign: 'left'
+        text: '0'
+        pos: (self.parent.hand_icon.center_x + self.parent.hand_icon.width / 2, self.parent.hand_icon.pos[1] + 5)
+
+    Image:
+        id: herd_icon_id
+        source: 'images/player_herd_icon.png'
+        size: self.texture_size
+        pos: (self.parent.hand_label.center_x + self.parent.hand_label.width / 2, self.parent.hand_label.pos[1] - 5)
+    Label:
+        id: herd_label_id
+        size: self.texture_size
+        halign: 'left'
+        text: '0'
+        pos: (self.parent.herd_icon.center_x + self.parent.herd_icon.width / 2, self.parent.herd_icon.pos[1] + 5)
+
+    Image:
+        id: excellence_token_one_id
+        source: 'images/excellence_token_icon.png'
+        size: self.texture_size
+        pos:
+            (
+            self.parent.herd_label.center_x + self.parent.herd_label.width / 2 + 10 if self.parent.player_number == 1 else self.parent.money_icon.center_x - self.parent.money_icon.width / 2 - self.width - 10,
+            self.parent.herd_label.pos[1] - 5
+            )
+        opacity: 0.0
+    Image:
+        id: excellence_token_two_id
+        source: 'images/excellence_token_icon.png'
+        size: self.texture_size
+        pos:
+            (
+            self.parent.excellence_token_one.center_x +
+            (0 if self.parent.player_number == 1 else -1 * self.width),
+            self.parent.excellence_token_one.pos[1]
+            )
+        opacity: 0.0
+
+
+<Card>:
+    color: (1, 1, 1, 1)
+    source: self.back_source
+    size: self.texture_size
+    on_press: self.select(args)
+
+
+<PlayerArea>:
+    size: 162*5, 227
+
+<Market>:
+    size: 162*5, 227
+
+<DrawDeck>:
+    size: 162, 227
+
+<DiscardPile>:
+    size: 162, 227
+
+<TokenBank>:
+    size: 215, 510
+
